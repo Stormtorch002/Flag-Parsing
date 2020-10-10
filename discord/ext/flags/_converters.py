@@ -6,7 +6,15 @@ import inspect
 import re
 
 import discord
-from discord.ext.commands import BadArgument, NoPrivateMessage
+from discord.ext.commands import (
+    BadArgument, 
+    ChannelNotFound,
+    MemberNotFound, 
+    UserNotFound, 
+    RoleNotFound,
+    EmojiNotFound,
+    NoPrivateMessage
+)
 
 
 def _get_id_match(argument):
@@ -38,7 +46,7 @@ def convert_to_member(ctx, argument):
         else:
             result = _get_from_guilds(bot, 'get_member', user_id)
     if result is None:
-        raise BadArgument('Member "{}" not found'.format(argument))
+        raise MemberNotFound('Member "{}" not found'.format(argument))
     return result
 
 
@@ -64,7 +72,7 @@ def convert_to_user(ctx, argument):
         result = discord.utils.find(predicate, state._users.values())
 
     if result is None:
-        raise BadArgument('User "{}" not found'.format(argument))
+        raise UserNotFound('User "{}" not found'.format(argument))
     return result
 
 
@@ -91,7 +99,7 @@ def convert_to_text_channel(ctx, argument):
             result = _get_from_guilds(bot, 'get_channel', channel_id)
 
     if not isinstance(result, discord.TextChannel):
-        raise BadArgument('Channel "{}" not found.'.format(argument))
+        raise ChannelNotFound('Channel "{}" not found.'.format(argument))
 
     return result
 
@@ -118,7 +126,7 @@ def convert_to_voice_channel(ctx, argument):
             result = _get_from_guilds(bot, 'get_channel', channel_id)
 
     if not isinstance(result, discord.VoiceChannel):
-        raise BadArgument('Channel "{}" not found.'.format(argument))
+        raise ChannelNotFound('Channel "{}" not found.'.format(argument))
 
     return result
 
@@ -146,7 +154,7 @@ def convert_to_category_channel(ctx, argument):
             result = _get_from_guilds(bot, 'get_channel', channel_id)
 
     if not isinstance(result, discord.CategoryChannel):
-        raise BadArgument('Channel "{}" not found.'.format(argument))
+        raise ChannelNotFound('Channel "{}" not found.'.format(argument))
 
     return
 
@@ -181,7 +189,7 @@ def convert_to_role(ctx, argument):
         result = discord.utils.get(guild._roles.values(), name=argument)
 
     if result is None:
-        raise BadArgument('Role "{}" not found.'.format(argument))
+        raise RoleNotFound('Role "{}" not found.'.format(argument))
     return result
 
 
@@ -209,7 +217,7 @@ def convert_to_emoji(ctx, argument):
             result = discord.utils.get(bot.emojis, id=emoji_id)
 
     if result is None:
-        raise BadArgument('Emoji "{}" not found.'.format(argument))
+        raise EmojiNotFound('Emoji "{}" not found.'.format(argument))
 
     return result
 
